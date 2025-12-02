@@ -9,9 +9,10 @@ export default function CreateTask({ open, onClose, onCreated }) {
   const [listening, setListening] = useState(false)
   const [transcript, setTranscript] = useState("")
   const [prompt, setPrompt] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [isCreating, setIsCreating] = useState(false)
   const recognitionRef = useRef(null)
- 
-
+  
   // Helper to get token
   const getToken = () => {
     if (typeof window !== 'undefined') {
@@ -54,11 +55,25 @@ export default function CreateTask({ open, onClose, onCreated }) {
     recognitionRef.current.stop()
   }
 
+  // Reset all states
+  const resetForm = () => {
+    setTranscript("")
+    setPrompt("")
+    setListening(false)
+    setIsCreating(false)
+    setLoading(false)
+  }
+
   async function createTask() {
+    // Prevent double-click
+    if (isCreating || loading) return
+    
     const description = mode === "voice" ? transcript : prompt
     if (!description.trim()) return
 
     const token = getToken()
+    setIsCreating(true)
+    setLoading(true)
 
     try {
       await axios.post(
@@ -70,9 +85,8 @@ export default function CreateTask({ open, onClose, onCreated }) {
         }
       )
 
-      setTranscript("")
-      setPrompt("")
-      setListening(false)
+      // Reset form after success
+      resetForm()
 
       if (onCreated) onCreated()
       onClose()
@@ -84,8 +98,18 @@ export default function CreateTask({ open, onClose, onCreated }) {
           window.location.href = '/login'
         }
       }
+      // Reset creating state on error
+      setIsCreating(false)
+      setLoading(false)
     }
   }
+
+  // Reset when modal opens/closes
+  useEffect(() => {
+    if (!open) {
+      resetForm()
+    }
+  }, [open])
 
   if (!open) return null
 
@@ -96,32 +120,45 @@ export default function CreateTask({ open, onClose, onCreated }) {
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-slate-600 dark:text-slate-300 text-sm"
+          disabled={loading}
         >
           Close
         </button>
 
         <h2 className="text-xl font-semibold text-foreground mb-4">Create Task</h2>
 
+        {/* Loading Overlay */}
+        {loading && (
+          <div className="absolute inset-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl z-10 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+              <p className="text-sm font-medium text-foreground">Creating task...</p>
+            </div>
+          </div>
+        )}
+
         {/* Mode Switch */}
         <div className="flex mb-4 gap-2">
           <button
-            onClick={() => setMode("voice")}
-            className={`flex-1 px-4 py-2 rounded-lg font-medium ${
+            onClick={() => !loading && setMode("voice")}
+            disabled={loading}
+            className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
               mode === "voice"
                 ? "bg-primary text-white"
                 : "bg-slate-200 dark:bg-slate-700 text-foreground"
-            }`}
+            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             Voice
           </button>
 
           <button
-            onClick={() => setMode("nlp")}
-            className={`flex-1 px-4 py-2 rounded-lg font-medium ${
+            onClick={() => !loading && setMode("nlp")}
+            disabled={loading}
+            className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${
               mode === "nlp"
                 ? "bg-primary text-white"
                 : "bg-slate-200 dark:bg-slate-700 text-foreground"
-            }`}
+            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             NLP Prompt
           </button>
@@ -138,7 +175,9 @@ export default function CreateTask({ open, onClose, onCreated }) {
                   transition={{ repeat: Infinity, duration: 1.2 }}
                 />
               ) : (
-                <div className="text-slate-500 text-sm">Press Start to speak</div>
+                <div className={`text-sm ${loading ? "text-slate-400" : "text-slate-500"}`}>
+                  {loading ? "Processing..." : "Press Start to speak"}
+                </div>
               )}
             </div>
 
@@ -149,14 +188,24 @@ export default function CreateTask({ open, onClose, onCreated }) {
             <div className="flex items-center justify-between mt-6">
               <button
                 onClick={startListening}
-                className="px-4 py-2 bg-primary text-white rounded-lg"
+                disabled={loading || listening}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  loading || listening
+                    ? "bg-primary/50 text-white/70 cursor-not-allowed"
+                    : "bg-primary text-white hover:bg-primary/90"
+                }`}
               >
-                Start
+                {listening ? "Listening..." : "Start"}
               </button>
 
               <button
                 onClick={stopListening}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg"
+                disabled={loading || !listening}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  loading || !listening
+                    ? "bg-red-600/50 text-white/70 cursor-not-allowed"
+                    : "bg-red-600 text-white hover:bg-red-700"
+                }`}
               >
                 Stop
               </button>
@@ -169,9 +218,14 @@ export default function CreateTask({ open, onClose, onCreated }) {
           <>
             <textarea
               value={prompt}
-              onChange={e => setPrompt(e.target.value)}
+              onChange={e => !loading && setPrompt(e.target.value)}
               placeholder="Describe your task..."
-              className="w-full p-3 h-32 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm outline-none text-foreground"
+              disabled={loading}
+              className={`w-full p-3 h-32 rounded-lg text-sm outline-none transition-all ${
+                loading
+                  ? "bg-slate-200 dark:bg-slate-900 text-slate-400 cursor-not-allowed"
+                  : "bg-slate-100 dark:bg-slate-700 text-foreground"
+              }`}
             />
 
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -183,9 +237,21 @@ export default function CreateTask({ open, onClose, onCreated }) {
         {/* Create Button */}
         <button
           onClick={createTask}
-          className="w-full mt-6 px-4 py-2 bg-primary text-white rounded-lg font-medium"
+          disabled={isCreating || loading || (!transcript.trim() && !prompt.trim())}
+          className={`w-full mt-6 px-4 py-2 rounded-lg font-medium transition-all ${
+            isCreating || loading || (!transcript.trim() && !prompt.trim())
+              ? "bg-primary/50 text-white/70 cursor-not-allowed"
+              : "bg-primary text-white hover:bg-primary/90"
+          }`}
         >
-          Create Task
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              Creating...
+            </span>
+          ) : (
+            "Create Task"
+          )}
         </button>
       </div>
     </div>

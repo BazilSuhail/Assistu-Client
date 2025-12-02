@@ -37,6 +37,7 @@ export default function TasksPage() {
         withCredentials: true,
         headers: { Authorization: `Bearer ${token}` }
       })
+      console.log(res.data)
       
       const mapped = res.data.tasks.map(t => ({
         id: t.id,
@@ -181,7 +182,7 @@ export default function TasksPage() {
                 </div>
 
                 <span className={`text-xs font-medium px-3 py-1 rounded-full ${
-                  task.priority === "High"
+                  task.priority === "high"
                     ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300"
                     : "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300"
                 }`}>
