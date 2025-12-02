@@ -31,11 +31,9 @@ const handleSubmit = async (e) => {
     const apiUrl = process.env.NEXT_PUBLIC_SERVER_API_URL
     if (!apiUrl) {
       throw new Error("API URL missing")
-    }
-console.log(`${apiUrl}/api/auth/register/`)
-console.log(`/api/auth/register/`)
+    } 
 
-    const response = await axios.post(`${apiUrl}/api/auth/register/`, {
+    const response = await axios.post(`${apiUrl}/auth/register/`, {
       email: formData.email,
       password: formData.password,
       name: formData.name,

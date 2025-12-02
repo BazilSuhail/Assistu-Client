@@ -8,8 +8,8 @@ import { FaGoogle } from "react-icons/fa"
 
 export default function LoginPage() {
   const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("b@gmail.com")
+  const [password, setPassword] = useState("112233")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -26,7 +26,7 @@ export default function LoginPage() {
         throw new Error("API URL not configured")
       }
 
-      const response = await fetch(`${apiUrl}/api/auth/login/`, {
+      const response = await fetch(`${apiUrl}/auth/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

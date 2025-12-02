@@ -28,7 +28,7 @@ export default function DashboardPage() {
       try {
         const token = localStorage.getItem("access")
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_SERVER_API_URL}/api/tasks/dashboard/`,
+          `${process.env.NEXT_PUBLIC_SERVER_API_URL}/tasks/dashboard/`,
           { headers: { Authorization: `Bearer ${token}` } }
         )
 
