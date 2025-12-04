@@ -30,7 +30,7 @@ export default function NoteDetailPage() {
           }
         }
       )
-
+//console.log(res.data)
       setNote(res.data)
     } catch (err) {
       console.log(err)
@@ -129,12 +129,6 @@ export default function NoteDetailPage() {
           </div>
         </div>
       </motion.div>
-
-      <motion.div variants={itemVariants} className="card p-6 mb-6">
-        <h3 className="font-bold text-foreground mb-4">Transcript</h3>
-        <p className="text-foreground whitespace-pre-line leading-relaxed">{note.transcript}</p>
-      </motion.div>
-
       <motion.div variants={itemVariants} className="card p-6 mb-6">
         <h3 className="font-bold text-foreground mb-4">Summary</h3>
         <p className="text-foreground">{note.summary}</p>
@@ -202,6 +196,12 @@ export default function NoteDetailPage() {
           Export
         </motion.button>
       </motion.div>
+
+      <motion.div variants={itemVariants} className="card p-6 mb-6">
+        <h3 className="font-bold text-foreground mb-4">Transcript</h3>
+        <p className="text-foreground whitespace-pre-line leading-relaxed">{note.transcript}</p>
+      </motion.div>
+
     </motion.div>
   )
 }
