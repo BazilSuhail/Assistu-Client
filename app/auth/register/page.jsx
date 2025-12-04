@@ -4,9 +4,8 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { HiArrowLeft } from "react-icons/hi"
-
   import axios from "axios"
+import Image from "next/image"
 
 export default function SignUpPage() {
   const router = useRouter()
@@ -81,16 +80,21 @@ const handleSubmit = async (e) => {
         animate="visible"
         className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-10"
       >
+               
+        <motion.div
+          className="hidden md:flex flex-col justify-center items-center p-6"
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <Image
+            src="/auth/image.png"
+            alt="No tasks available"
+            width={450}
+            height={600}
+          />
+        </motion.div>
 
-        <div className="hidden md:flex flex-col justify-center items-center order-1 md:order-2 p-6">
-          <h2 className="text-2xl font-semibold text-foreground mb-4">Welcome</h2>
-          <p className="text-slate-600 dark:text-slate-400 text-center max-w-sm">
-            Create your student account and get access to your dashboard.
-          </p>
-        </div>
-
-        <div className="flex flex-col justify-center order-2 md:order-1">
-
+        <div className="flex flex-col justify-center ">
 
           <motion.div variants={itemVariants} className="text-left mb-8">
             <h1 className="text-4xl font-bold text-foreground">Create Account</h1>

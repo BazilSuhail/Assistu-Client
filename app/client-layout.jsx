@@ -1,14 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Sidebar from "@/components/layout/sidebar"
+import Sidebar from "@/components/layout/Sidebar"
 import BottomNav from "@/components/layout/bottom-nav"
+import SettingsModal from "@/components/layout/SettingsModal"
 import { usePathname } from "next/navigation"
 
 export default function ClientLayout({ children, geistMono }) {
   const [darkMode, setDarkMode] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
+  const [settingsModalOpen, setSettingsModalOpen] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -55,9 +57,25 @@ export default function ClientLayout({ children, geistMono }) {
         )}
         <main className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto">{children}</div>
-          {isMobile && <BottomNav darkMode={darkMode} onToggleDarkMode={toggleDarkMode} />}
+          {isMobile && (
+            <BottomNav
+              darkMode={darkMode}
+              onToggleDarkMode={toggleDarkMode}
+              onOpenSettings={() => setSettingsModalOpen(true)}
+            />
+          )}
         </main>
       </div>
+
+      {/* Settings Modal for Mobile */}
+      {isMobile && (
+        <SettingsModal
+          isOpen={settingsModalOpen}
+          onClose={() => setSettingsModalOpen(false)}
+          darkMode={darkMode}
+          onToggleDarkMode={toggleDarkMode}
+        />
+      )}
     </div>
   )
 }

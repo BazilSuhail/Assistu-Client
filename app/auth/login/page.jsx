@@ -3,8 +3,8 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { motion } from "framer-motion"
-import { FaGoogle } from "react-icons/fa"
+import { motion } from "framer-motion" 
+import Image from "next/image"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -89,20 +89,33 @@ export default function LoginPage() {
         className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-10"
       >
 
-        <div className="hidden md:flex flex-col justify-center items-center order-1 p-6">
-          <h2 className="text-2xl font-semibold text-foreground mb-4">Welcome Back</h2>
-          <p className="text-slate-600 dark:text-slate-400 text-center max-w-sm">
-            Sign in to your student account and access your dashboard.
-          </p>
-        </div>
+       
+<motion.div
+  className="hidden md:flex flex-col justify-center items-center p-6"
+  animate={{ y: [0, -10, 0] }}
+  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+>
+  <Image
+    src="/auth/login.png"
+    alt="No tasks available"
+    width={450}
+    height={600}
+  />
+</motion.div>
 
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="w-full max-w-md">
-          <motion.div variants={itemVariants} className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
-              VA
+          <motion.div variants={itemVariants} className="flex text-center mb-8">
+            <Image
+              src="/assistu.webp"
+              alt="No tasks available"
+              width={80}
+              height={15}
+            />
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Voice Assistant</h1>
+              <p className="ml-3 text-slate-600 dark:text-slate-400 mt-2">Your intelligent study companion</p>
+
             </div>
-            <h1 className="text-3xl font-bold text-foreground">Voice Assistant</h1>
-            <p className="text-slate-600 dark:text-slate-400 mt-2">Your intelligent study companion</p>
           </motion.div>
 
           <motion.div variants={itemVariants} className="card p-8">

@@ -2,6 +2,9 @@
 
 **Assistu** is a modern web-based academic assistant designed to help students manage their academic workflow through intelligent voice commands. This repository contains the **client application** built with Next.js and React.
 
+> [!NOTE]
+> Access the web app user manual via this [User Manual](https://github.com/BazilSuhail/Assistu-Client/blob/main/public/AssistU-User-Manual.pdf).
+
 
 > **Server Repository**: Access the Server `backend` of this client via [Assistu-Server](https://github.com/BazilSuhail/Assistu-Server)
 
