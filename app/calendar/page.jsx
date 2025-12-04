@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react"
 import { motion } from "framer-motion"
-import Loader from "@/components/shared/loader"
-import VoiceCommandBar from "@/components/shared/voice-command-bar"
+import Loader from "@/components/shared/loader" 
 import { HiChevronLeft, HiChevronRight, HiPlus, HiX, HiTrash, HiPencilAlt, HiChevronDown, HiChevronUp, HiCheck, HiOutlineX } from "react-icons/hi"
 import axios from "axios"
 import CreateEventModal from "@/components/events/CreateEvent"
@@ -11,17 +10,15 @@ import CreateEventModal from "@/components/events/CreateEvent"
 // --- Event API Functions ---
 const SERVER_API_URL = process.env.NEXT_PUBLIC_SERVER_API_URL || ""
 
-// Helper function for authentication headers
 const getAuthHeaders = () => {
     const token = localStorage.getItem("access")
-    console.log(token)
+    //console.log(token)
     return { Authorization: `Bearer ${token}` }
 }
 
 const removeEvent = async (eventId) => {
     const headers = getAuthHeaders()
-    try {
-        // FIX: Switched to DELETE method and placed eventId in the URL
+    try { 
         const res = await axios.delete(
             `${SERVER_API_URL}/events/delete/${eventId}/`,
             { headers: headers }
@@ -471,11 +468,7 @@ export default function CalendarPage() {
                     New Event
                 </button>
             </motion.div>
-
-            {/* Voice Command Bar */}
-            <motion.div variants={itemVariants} className="mb-6 md:mb-8">
-                <VoiceCommandBar />
-            </motion.div>
+ 
 
             {/* View Switcher */}
             <motion.div variants={itemVariants} className="flex gap-2 mb-6">
